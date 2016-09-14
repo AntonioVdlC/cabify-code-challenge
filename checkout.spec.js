@@ -21,6 +21,9 @@ describe("Checkout", () => {
         it("should be chainable", () => {
             expect(co.scan("VOUCHER")).toBe(co)
         })
+        it("should throw an error when passed an invalid item", () => {
+            expect(() => co.scan()).toThrow()
+        })
     })
 
     it("should expose a .total() method", () => {
