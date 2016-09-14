@@ -2,7 +2,33 @@ import Checkout from "./checkout"
 
 describe("Checkout", () => {
     let co
-    const pricingRules = []
+    const pricingRules = {
+        "VOUCHER": (items) => {
+            let nbrVouchers = items
+                .filter(i => i.code === "VOUCHER")
+                .length + 1
+
+            if (nbrVouchers % 2 !== 1) {
+                return 0
+            } else {
+                return 5
+            }
+        },
+        "TSHIRT": (items) => {
+            let nbrTshirts = items
+                .filter(i => i.code === "TSHIRT")
+                .length + 1
+            
+            if (nbrTshirts === 3) {
+                return 17
+            } else if (nbrTshirts > 3) { 
+                return 19
+            } else {
+                return 20
+            }
+        },
+        "MUG": () => 7.5
+    }
 
     beforeEach(() => {
         co = new Checkout(pricingRules)
