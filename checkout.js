@@ -5,36 +5,43 @@ export default class Checkout {
     }
 
     scan(item) {
-        this.items.push({
-            code: item,
-            price: ((items, item) => {
-                if (item === "VOUCHER") {
-                    let nbrVouchers = items
-                        .filter(i => i.code === "VOUCHER")
-                        .length + 1
+        if (item === "VOUCHER"
+            || item === "TSHIRT"
+            || item === "MUG") {
+            
+            this.items.push({
+                code: item,
+                price: ((items, item) => {
+                    if (item === "VOUCHER") {
+                        let nbrVouchers = items
+                            .filter(i => i.code === "VOUCHER")
+                            .length + 1
 
-                    if (nbrVouchers % 2 !== 1) {
-                        return 0
-                    } else {
-                        return 5
+                        if (nbrVouchers % 2 !== 1) {
+                            return 0
+                        } else {
+                            return 5
+                        }
+                    } else if (item === "TSHIRT") {
+                        let nbrTshirts = items
+                            .filter(i => i.code === "TSHIRT")
+                            .length + 1
+                        
+                        if (nbrTshirts === 3) {
+                            return 17
+                        } else if (nbrTshirts > 3) { 
+                            return 19
+                        } else {
+                            return 20
+                        }
+                    } else if (item === "MUG") { 
+                        return 7.5
                     }
-                } else if (item === "TSHIRT") {
-                    let nbrTshirts = items
-                        .filter(i => i.code === "TSHIRT")
-                        .length + 1
-                    
-                    if (nbrTshirts === 3) {
-                        return 17
-                    } else if (nbrTshirts > 3) { 
-                        return 19
-                    } else {
-                        return 20
-                    }
-                } else if (item === "MUG") { 
-                    return 7.5
-                }
-            })(this.items, item)
-        })
+                })(this.items, item)
+            })
+        } else {
+            throw new Error("The item you are trying to scan does not exist.")
+        }
 
         return this
     }
