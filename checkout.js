@@ -5,45 +5,45 @@ export default class Checkout {
     }
 
     scan(item) {
-        this.items.push(item)
+        this.items.push({
+            code: item,
+            price: ((items, item) => {
+                if (item === "VOUCHER") {
+                    let nbrVouchers = items
+                        .filter(i => i.code === "VOUCHER")
+                        .length + 1
+
+                    if (nbrVouchers % 2 !== 1) {
+                        return 0
+                    } else {
+                        return 5
+                    }
+                } else if (item === "TSHIRT") {
+                    let nbrTshirts = items
+                        .filter(i => i.code === "TSHIRT")
+                        .length + 1
+                    
+                    if (nbrTshirts === 3) {
+                        return 17
+                    } else if (nbrTshirts > 3) { 
+                        return 19
+                    } else {
+                        return 20
+                    }
+                } else if (item === "MUG") { 
+                    return 7.5
+                }
+            })(this.items, item)
+        })
 
         return this
     }
 
     total() {
-        if (this.items.length === 3
-            && this.items[0] === "VOUCHER" 
-            && this.items[1] === "TSHIRT" 
-            && this.items[2] === "MUG") {
-            
-            return "32.50€"
-        }
-        else if (this.items.length === 3
-            && this.items[0] === "VOUCHER" 
-            && this.items[1] === "TSHIRT" 
-            && this.items[2] === "VOUCHER") {
-            
-            return "25.00€"
-        }
-        else if (this.items.length === 5
-            && this.items[0] === "TSHIRT" 
-            && this.items[1] === "TSHIRT" 
-            && this.items[2] === "TSHIRT"  
-            && this.items[3] === "VOUCHER"
-            && this.items[4] === "TSHIRT") {
-            
-            return "81.00€"
-        }
-        else if (this.items.length === 7
-            && this.items[0] === "VOUCHER" 
-            && this.items[1] === "TSHIRT" 
-            && this.items[2] === "VOUCHER"  
-            && this.items[3] === "VOUCHER"
-            && this.items[4] === "MUG"
-            && this.items[5] === "TSHIRT"
-            && this.items[6] === "TSHIRT") {
-            
-            return "74.50€"
-        }
+        let total = this.items
+            .reduce((total, item) => total + item.price, 0)
+            .toFixed(2) + "€" // Number.toLocaleString is broken in Chrome
+
+        return total
     }
 }
