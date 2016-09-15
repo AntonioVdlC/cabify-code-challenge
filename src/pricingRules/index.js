@@ -12,7 +12,9 @@ const applyRules = (pricingRules) => {
     return pricingRules.map(rule => {
         return {
             item: rule.item,
-            rule: rules[rule.type](rule)
+            rule: (rules[rule.type]) ? 
+                rules[rule.type](rule) : 
+                rules["unit"](rule)
         }
     })
 }
