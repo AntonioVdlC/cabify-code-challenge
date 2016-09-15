@@ -28,39 +28,35 @@ let co = new Checkout(pricingRules)
 ```
 
 ### Pricing Rules
-The pricing rules are defined as an object, with the item's codes as key and a function that accepts the current list of items as parameter and that returns a number as value.
+The pricing rules are defined as an array (serializable into JSON), with the item's code, the item's unit price, the item's pricing rule and any other field that applies to that given rule.
 
 ```
-const pricingRules = {
-    "VOUCHER": (items) => {
-        let nbrVouchers = items
-            .filter(i => i.code === "VOUCHER")
-            .length + 1
-
-        if (nbrVouchers % 2 !== 1) {
-            return 0
-        } else {
-            return 5
-        }
-    },
-    "TSHIRT": (items) => {
-        let nbrTshirts = items
-            .filter(i => i.code === "TSHIRT")
-            .length + 1
-        
-        if (nbrTshirts === 3) {
-            return 17
-        } else if (nbrTshirts > 3) { 
-            return 19
-        } else {
-            return 20
-        }
-    },
-    "MUG": () => 7.5
-}
+const pricingRules = [
+    {
+        "item": "VOUCHER",
+        "type": "xfory",
+        "x": 2,
+        "y": 1,
+        "unitPrice": 5
+    },{
+        "item": "TSHIRT",
+        "type": "bulk",
+        "bulkNumber": 3,
+        "bulkPrice": 19,
+        "unitPrice": 20
+    },{
+        "item": "MUG",
+        "type": "unit",
+        "unitPrice": 7.5
+    }
+]
 ```
 
-This allows for very flexible pricing rules, but requires manual changes in the code anytime a pricing rule needs to be changed.
+This array is then passed to the `Checkout` constructor and transformed into functions using `applyRules` so that the rules can be easily applied to the several scanned items.
+
+Each type of pricing rule is implemented as a higher-order function in the `pricingRules/` folder. Adding new kinds of pricing rules is as easy as adding a new rule implementation in that folder and referencing it in `pricingRules/index.js`.
+
+This approach allows for some autonomy on the marketing side, as they can easily update the pricing rules applied to the items without needing specific development. Ideally, the `pricingRules` array is generated on the sever and served as JSON through an API.
 
 ### Scan
 You can add as many items as wanted to the `checkout` object using the `scan` method. The `scan` method is chainable and accepts an item's code (defined in the pricing rules).
@@ -86,6 +82,22 @@ For development work, it is recommended to use some flavour of TDD. To do so, yo
 Finally, if you want to generate a coverage report, you can run `npm run test:coverage`.
 
 > There is no linting as of now, because I assume coding styles are not part of the coding exercise!
+
+## Limitations
+Even though the current solution complies with all the requirements, there are still a few limitations:
+
+- Pricing Rules Validation
+
+    The pricing rules validation is very limited, as I assumed that would be done ideally on the server when generating the `pricingRules` JSON.
+
+- Items Individual Prices
+
+    With the current implementation, the total of a `checkout` is always correct (respecting the pricing rules). Unfortunately, that comes at the price of incorrect individual prices for the items. For example, the calculated price for the 3rd "TSHIRT" item would be 17€ instead of 19€ because the first 2 "TSHIRTS" have been saved as having a 20€-pricetag.
+    
+    To make sure all the individual prices are correct, we would need a different approach, where instead of calculating the price of the scanned item depending on the list of items already checked, we would need to to calculate the price of all the items already checked depending on the last item scanned.
+    
+    Nevertheless, that implementation would be (slightly) less performant than the current as it would require the creation and calculation of a new array for each item scanned, whereas the actual implementation just calculates the price of the current scanned item. Besides, there are no public methods to access the internals of the `checkout` object, so I guess that should be ok!
+
 
 ## Licence
 MIT
