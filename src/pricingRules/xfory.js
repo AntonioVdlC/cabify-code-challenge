@@ -3,8 +3,8 @@ const xfory = ({item, x, y, unitPrice}) => (items) => {
         .filter(i => i.code === item)
         .length + 1
         
-    if (nbr % x !== y) {
-        return 0
+    if (nbr % x === 0) {
+        return unitPrice - (unitPrice * (x - y))
     } else {
         return unitPrice
     }
