@@ -7,18 +7,18 @@ export default class Checkout {
     }
 
     scan(item) {
+        if (!this.pricingRules.some(rule => rule.item === item)) {
+            throw new Error("The item you are trying to scan does not exist.")
+        }
+
         let rule = this.pricingRules
             .find(rule => rule.item === item)
             .rule
 
-        if (rule) {
-            this.items.push({
-                code: item,
-                price: rule(this.items) 
-            })
-        } else {
-            throw new Error("The item you are trying to scan does not exist.")
-        }
+        this.items.push({
+            code: item,
+            price: rule(this.items) 
+        })
 
         return this
     }
