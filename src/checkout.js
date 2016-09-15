@@ -1,20 +1,24 @@
+import { applyRules } from "./pricingRules"
+
 export default class Checkout {
     constructor(pricingRules) {
-        this.pricingRules = pricingRules
+        this.pricingRules = applyRules(pricingRules)
         this.items = []
     }
 
     scan(item) {
-        let rule = this.pricingRules[item]
-
-        if (rule) {
-            this.items.push({
-                code: item,
-                price: rule(this.items) 
-            })
-        } else {
+        if (!this.pricingRules.some(rule => rule.item === item)) {
             throw new Error("The item you are trying to scan does not exist.")
         }
+
+        let rule = this.pricingRules
+            .find(rule => rule.item === item)
+            .rule
+
+        this.items.push({
+            code: item,
+            price: rule(this.items) 
+        })
 
         return this
     }
