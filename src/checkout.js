@@ -1,11 +1,15 @@
+import { applyRules } from "./pricingRules"
+
 export default class Checkout {
     constructor(pricingRules) {
-        this.pricingRules = pricingRules
+        this.pricingRules = applyRules(pricingRules)
         this.items = []
     }
 
     scan(item) {
-        let rule = this.pricingRules[item]
+        let rule = this.pricingRules
+            .find(rule => rule.item === item)
+            .rule
 
         if (rule) {
             this.items.push({
