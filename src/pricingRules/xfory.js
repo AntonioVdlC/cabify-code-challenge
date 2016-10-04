@@ -1,7 +1,5 @@
-const xfory = ({item, x, y, unitPrice}) => (items) => {
-    let nbr = items
-        .filter(i => i.code === item)
-        .length + 1
+const xfory = ({item, x, y, unitPrice}) => (nbrItems) => {
+    let nbr = nbrItems[item]
         
     if (nbr % x === 0) {
         return unitPrice - (unitPrice * (x - y))

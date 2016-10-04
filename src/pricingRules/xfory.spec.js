@@ -11,11 +11,11 @@ describe("xfory", () => {
     let rule = xfory(item)
     
     it("should return the unit price of an item if the number of items % x is not 0", () => {
-        let items = [{code:"VOUCHER"},{code:"VOUCHER"}]
-        expect(rule(items)).toBe(item.unitPrice)
+        let nbrItems = {"VOUCHER": 3}
+        expect(rule(nbrItems)).toBe(item.unitPrice)
     })
     it("should return the 0 of an item if the number of items % x is 0", () => {
-        let items = [{code:"VOUCHER"},{code:"VOUCHER"},{code:"VOUCHER"}]
-        expect(rule(items)).toBe(0)
+        let nbrItems = {"VOUCHER": 4}
+        expect(rule(nbrItems)).toBe(0)
     })
 })
