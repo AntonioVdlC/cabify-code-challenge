@@ -4,6 +4,7 @@ export default class Checkout {
     constructor(pricingRules) {
         this.pricingRules = applyRules(pricingRules)
         this.items = []
+        this.nbrItems = {}
     }
 
     scan(item) {
@@ -15,10 +16,25 @@ export default class Checkout {
             .find(rule => rule.item === item)
             .rule
 
-        this.items.push({
-            code: item,
-            price: rule(this.items) 
-        })
+        // Optimistically updating the number of items
+        if (this.nbrItems[item]) {
+            this.nbrItems[item] ++
+        } else {
+            this.nbrItems[item] = 1
+        }
+
+        try {
+            // Add the item to the checkout list
+            this.items.push({
+                code: item,
+                price: rule(this.nbrItems) 
+            })
+        } catch(error) {
+            // If something goes wrong, update the number of items
+            this.nbrItems --
+
+            throw error
+        }
 
         return this
     }

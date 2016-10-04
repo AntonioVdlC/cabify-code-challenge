@@ -1,7 +1,5 @@
-const bulk = ({item, bulkNumber, bulkPrice, unitPrice}) => (items) => {
-    let nbr = items
-        .filter(i => i.code === item)
-        .length + 1
+const bulk = ({item, bulkNumber, bulkPrice, unitPrice}) => (nbrItems) => {
+    let nbr = nbrItems[item]
     
     if (nbr === bulkNumber) {
         return unitPrice - (unitPrice - bulkPrice) * bulkNumber

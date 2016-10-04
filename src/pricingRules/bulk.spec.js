@@ -11,17 +11,17 @@ describe("bulk", () => {
     let rule = bulk(item)
     
     it("should return the unit price of an item if the number of items is below the bulk number", () => {
-        let items = [{code:"TSHIRT"}]
-        expect(rule(items)).toBe(item.unitPrice)
+        let nbrItems = {"TSHIRT": 1}
+        expect(rule(nbrItems)).toBe(item.unitPrice)
     })
 
     it("should return the unit price minus the average difference times the bulk number if the number of items is exactly the bulk number", () => {
-        let items = [{code:"TSHIRT"},{code:"TSHIRT"}]
-        expect(rule(items)).toBe(item.unitPrice - (item.unitPrice - item.bulkPrice) * item.bulkNumber)
+        let nbrItems = {"TSHIRT": 3}
+        expect(rule(nbrItems)).toBe(item.unitPrice - (item.unitPrice - item.bulkPrice) * item.bulkNumber)
     })
 
     it("should return the bulk price if the number of items is above the bulk number", () => {
-        let items = [{code:"TSHIRT"},{code:"TSHIRT"},{code:"TSHIRT"}]
-        expect(rule(items)).toBe(item.bulkPrice)
+        let nbrItems = {"TSHIRT": 4}
+        expect(rule(nbrItems)).toBe(item.bulkPrice)
     })
 })
