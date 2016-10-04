@@ -31,7 +31,7 @@ export default class Checkout {
             })
         } catch(error) {
             // If something goes wrong, update the number of items
-            this.nbrItems --
+            this.nbrItems[item] --
 
             throw error
         }
